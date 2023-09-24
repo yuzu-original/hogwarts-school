@@ -22,6 +22,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
+    @GetMapping(params = {"age"})
+    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam(value = "age", required = false) int age) {
+        return ResponseEntity.ok(studentService.getStudentsByAge(age));
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable long id) {
         Student student = studentService.getStudentById(id);

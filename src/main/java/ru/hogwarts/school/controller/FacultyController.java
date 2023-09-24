@@ -22,6 +22,11 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
+    @GetMapping(params = {"color"})
+    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(@RequestParam(value = "color", required = false) String color) {
+        return ResponseEntity.ok(facultyService.getFacultiesByColor(color));
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFacultyById(@PathVariable long id) {
         Faculty faculty = facultyService.getFacultyById(id);
