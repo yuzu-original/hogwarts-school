@@ -18,13 +18,21 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> getAllStudents() {
+    public ResponseEntity<Collection<Student>> findAllStudents(
+            @RequestParam(value = "age", required = false) Integer age,
+            @RequestParam(value = "min-age", required = false) Integer minAge,
+            @RequestParam(value = "max-age", required = false) Integer maxAge
+    ) {
+        if (age != null) {
+            return ResponseEntity.ok(studentService.getStudentsByAge(age));
+        }
+        if (minAge != null || maxAge != null) {
+            if (minAge != null && maxAge != null) {
+                return ResponseEntity.ok(studentService.getStudentsBetweenAge(minAge, maxAge));
+            }
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(studentService.getAllStudents());
-    }
-
-    @GetMapping(params = {"age"})
-    public ResponseEntity<Collection<Student>> getStudentsByAge(@RequestParam(value = "age", required = false) int age) {
-        return ResponseEntity.ok(studentService.getStudentsByAge(age));
     }
 
     @GetMapping("{id}")

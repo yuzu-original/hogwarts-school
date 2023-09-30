@@ -18,13 +18,17 @@ public class FacultyController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
+    public ResponseEntity<Collection<Faculty>> getAllFaculties(
+            @RequestParam(value = "color", required = false) String color,
+            @RequestParam(value = "name", required = false) String name
+    ) {
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(facultyService.getFacultiesByColor(color));
+        }
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.getFacultiesByName(name));
+        }
         return ResponseEntity.ok(facultyService.getAllFaculties());
-    }
-
-    @GetMapping(params = {"color"})
-    public ResponseEntity<Collection<Faculty>> getFacultiesByColor(@RequestParam(value = "color", required = false) String color) {
-        return ResponseEntity.ok(facultyService.getFacultiesByColor(color));
     }
 
     @GetMapping("{id}")
