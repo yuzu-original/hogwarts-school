@@ -106,4 +106,11 @@ public class StudentService {
                 .map(studentDTOMapper::toDetailDTO)
                 .collect(Collectors.toList());
     }
+
+    public Collection<StudentDetailDTO> getStudentsByFacultyId(Long facultyId) {
+        return studentRepository.findByFacultyId(facultyId)
+                .stream()
+                .map(studentDTOMapper::toDetailDTO)
+                .collect(Collectors.toList());
+    }
 }

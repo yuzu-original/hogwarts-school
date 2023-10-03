@@ -22,7 +22,8 @@ public class StudentController {
     public ResponseEntity<Collection<StudentDetailDTO>> findAllStudents(
             @RequestParam(value = "age", required = false) Integer age,
             @RequestParam(value = "min-age", required = false) Integer minAge,
-            @RequestParam(value = "max-age", required = false) Integer maxAge
+            @RequestParam(value = "max-age", required = false) Integer maxAge,
+            @RequestParam(value = "faculty", required = false) Long facultyId
     ) {
         if (age != null) {
             return ResponseEntity.ok(studentService.getStudentsByAge(age));
@@ -32,6 +33,9 @@ public class StudentController {
                 return ResponseEntity.ok(studentService.getStudentsBetweenAge(minAge, maxAge));
             }
             return ResponseEntity.badRequest().build();
+        }
+        if (facultyId != null) {
+            return ResponseEntity.ok(studentService.getStudentsByFacultyId(facultyId));
         }
         return ResponseEntity.ok(studentService.getAllStudents());
     }
