@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.dto.FacultyCreateDTO;
 import ru.hogwarts.school.dto.FacultyDetailDTO;
 import ru.hogwarts.school.dto.FacultyNotDetailDTO;
+import ru.hogwarts.school.dto.StudentDetailDTO;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
@@ -35,37 +36,26 @@ public class FacultyController {
 
     @GetMapping("{id}")
     public ResponseEntity<FacultyDetailDTO> getFacultyById(@PathVariable Long id) {
-        FacultyDetailDTO faculty = facultyService.getFacultyById(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
+        return ResponseEntity.ok(facultyService.getFacultyById(id));
     }
 
     @PostMapping
     public ResponseEntity<FacultyDetailDTO> createFaculty(@RequestBody FacultyCreateDTO faculty) {
-        FacultyDetailDTO resultFaculty = facultyService.createFaculty(faculty);
-        if (resultFaculty == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(resultFaculty);
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<FacultyDetailDTO> updateFaculty(@RequestBody FacultyCreateDTO faculty, @PathVariable Long id) {
-        FacultyDetailDTO resultFaculty = facultyService.updateFaculty(id, faculty);
-        if (resultFaculty == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(resultFaculty);
+        return ResponseEntity.ok(facultyService.updateFaculty(id, faculty));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<FacultyDetailDTO> removeFaculty(@PathVariable Long id) {
-        FacultyDetailDTO faculty = facultyService.removeFaculty(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
+        return ResponseEntity.ok(facultyService.removeFaculty(id));
+    }
+
+    @GetMapping("{id}/students")
+    public ResponseEntity<Collection<StudentDetailDTO>> getFacultyStudents(@PathVariable Long id) {
+        return ResponseEntity.ok(facultyService.getFacultyStudentsById(id));
     }
 }

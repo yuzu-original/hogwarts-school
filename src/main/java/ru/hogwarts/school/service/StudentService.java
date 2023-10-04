@@ -1,9 +1,13 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.dto.FacultyDetailDTO;
 import ru.hogwarts.school.dto.StudentCreateDTO;
 import ru.hogwarts.school.dto.StudentDetailDTO;
+import ru.hogwarts.school.dto.mapper.FacultyDTOMapper;
 import ru.hogwarts.school.dto.mapper.StudentDTOMapper;
+import ru.hogwarts.school.exception.BadDataException;
+import ru.hogwarts.school.exception.NotFoundResourceException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
@@ -18,11 +22,13 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final StudentDTOMapper studentDTOMapper;
+    private final FacultyDTOMapper facultyDTOMapper;
 
-    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, StudentDTOMapper studentDTOMapper) {
+    public StudentService(StudentRepository studentRepository, FacultyRepository facultyRepository, StudentDTOMapper studentDTOMapper, FacultyDTOMapper facultyDTOMapper) {
         this.studentRepository = studentRepository;
         this.facultyRepository = facultyRepository;
         this.studentDTOMapper = studentDTOMapper;
+        this.facultyDTOMapper = facultyDTOMapper;
     }
 
     public StudentDetailDTO createStudent(StudentCreateDTO studentInput) {
@@ -32,22 +38,16 @@ public class StudentService {
         if (studentInput.getFaculty() != null) {
             Faculty faculty = facultyRepository
                     .findById(studentInput.getFaculty())
-                    .orElse(null);
-            if (faculty != null) {
-                faculty.addStudent(student);
-            } else {
-                return null;
-            }
+                    .orElseThrow(() -> new BadDataException("Faculty not found"));
+            faculty.addStudent(student);
         }
         studentRepository.save(student);
         return studentDTOMapper.toDetailDTO(student);
     }
 
     public StudentDetailDTO getStudentById(Long id) {
-        Student student = studentRepository.findById(id).orElse(null);
-        if (student == null) {
-            return null;
-        }
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
         return studentDTOMapper.toDetailDTO(student);
     }
 
@@ -59,10 +59,8 @@ public class StudentService {
     }
 
     public StudentDetailDTO updateStudent(Long id, StudentCreateDTO studentInput) {
-        Student student = studentRepository.findById(id).orElse(null);
-        if (student == null) {
-            return null;
-        }
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
         student.setName(studentInput.getName());
         student.setAge(studentInput.getAge());
         Faculty faculty = student.getFaculty();
@@ -81,10 +79,8 @@ public class StudentService {
     }
 
     public StudentDetailDTO removeStudent(Long id) {
-        Student student = studentRepository.findById(id).orElse(null);
-        if (student == null) {
-            return null;
-        }
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
         Faculty faculty = student.getFaculty();
         if (faculty != null) {
             faculty.removeStudent(student);
@@ -107,10 +103,14 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<StudentDetailDTO> getStudentsByFacultyId(Long facultyId) {
-        return studentRepository.findByFacultyId(facultyId)
-                .stream()
-                .map(studentDTOMapper::toDetailDTO)
-                .collect(Collectors.toList());
+
+    public FacultyDetailDTO getStudentFacultyById(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
+        Faculty faculty = student.getFaculty();
+        if (faculty == null) {
+            return null;
+        }
+        return facultyDTOMapper.toDetailDTO(faculty);
     }
 }
