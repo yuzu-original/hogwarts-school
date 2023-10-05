@@ -1,27 +1,18 @@
-package ru.hogwarts.school.model;
+package ru.hogwarts.school.dto;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-public class Student {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StudentDetailDTO {
     private Long id;
     private String name;
     private Integer age;
-    @ManyToOne
-    @JoinColumn(name = "faculty_id")
-    private Faculty faculty;
+    private Long faculty;
 
-    public Student() {
-    }
-
-    public Student(Long id, String name, Integer age) {
+    public StudentDetailDTO(Long id, String name, Integer age, Long faculty) {
         this.id = id;
         this.name = name;
         this.age = age;
+        this.faculty = faculty;
     }
 
     public Long getId() {
@@ -48,33 +39,34 @@ public class Student {
         this.age = age;
     }
 
+    public Long getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Long faculty) {
+        this.faculty = faculty;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(name, student.name) && Objects.equals(age, student.age);
+        StudentDetailDTO that = (StudentDetailDTO) o;
+        return id == that.id && age == that.age && faculty == that.faculty && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age);
+        return Objects.hash(id, name, age, faculty);
     }
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "StudentDetailDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
+                ", faculty=" + faculty +
                 '}';
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
     }
 }
