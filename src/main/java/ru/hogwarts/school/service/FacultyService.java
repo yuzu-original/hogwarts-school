@@ -51,7 +51,7 @@ public class FacultyService {
                 faculty.addStudent(student);
             }
         }
-        facultyRepository.save(faculty);
+        faculty = facultyRepository.save(faculty);
         return facultyDTOMapper.toDetailDTO(faculty);
     }
 
@@ -97,15 +97,17 @@ public class FacultyService {
             faculty.addStudent(student);
         }
 
-        facultyRepository.save(faculty);
+        faculty = facultyRepository.save(faculty);
         return facultyDTOMapper.toDetailDTO(faculty);
     }
 
     public FacultyDetailDTO removeFaculty(Long id) {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new NotFoundResourceException("Faculty not found"));
-        for (Student student : Set.copyOf(faculty.getStudents())) {
-            faculty.removeStudent(student);
+        if (faculty.getStudents() != null) {
+            for (Student student : Set.copyOf(faculty.getStudents())) {
+                faculty.removeStudent(student);
+            }
         }
         facultyRepository.delete(faculty);
         return facultyDTOMapper.toDetailDTO(faculty);
