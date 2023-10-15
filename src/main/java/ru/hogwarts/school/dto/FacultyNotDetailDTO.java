@@ -42,7 +42,7 @@ public class FacultyNotDetailDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FacultyNotDetailDTO that = (FacultyNotDetailDTO) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(color, that.color);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
     }
 
     @Override

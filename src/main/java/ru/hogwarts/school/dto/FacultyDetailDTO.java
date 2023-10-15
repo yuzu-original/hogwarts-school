@@ -53,7 +53,7 @@ public class FacultyDetailDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FacultyDetailDTO that = (FacultyDetailDTO) o;
-        return id == that.id && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(students, that.students);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(students, that.students);
     }
 
     @Override

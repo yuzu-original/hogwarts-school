@@ -42,7 +42,7 @@ public class StudentCreateDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudentCreateDTO that = (StudentCreateDTO) o;
-        return age == that.age && faculty == that.faculty && Objects.equals(name, that.name);
+        return Objects.equals(age, that.age) && Objects.equals(faculty, that.faculty) && Objects.equals(name, that.name);
     }
 
     @Override
