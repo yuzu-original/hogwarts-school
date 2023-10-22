@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -157,6 +158,21 @@ public class StudentService {
 
     public Avatar findAvatar(Long id) {
         return avatarRepository.findByStudentId(id).orElseThrow(() -> new NotFoundResourceException("Avatar not found"));
+    }
+
+    public Long getStudentCount() {
+        return studentRepository.getCount();
+    }
+
+    public Double getStudentAvgAge() {
+        return studentRepository.getAvgAge();
+    }
+
+    public List<StudentDetailDTO> getLastStudents() {
+        return studentRepository.getLastStudents()
+                .stream()
+                .map(studentDTOMapper::toDetailDTO)
+                .collect(Collectors.toList());
     }
 
     private String getExtension(String fileName) {

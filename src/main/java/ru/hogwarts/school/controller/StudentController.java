@@ -67,6 +67,21 @@ public class StudentController {
         return ResponseEntity.ok(studentService.removeStudent(id));
     }
 
+    @GetMapping("count")
+    public ResponseEntity<Long> getCount() {
+        return ResponseEntity.ok(studentService.getStudentCount());
+    }
+
+    @GetMapping("avg-age")
+    public ResponseEntity<Double> getAvgAge() {
+        return ResponseEntity.ok(studentService.getStudentAvgAge());
+    }
+
+    @GetMapping("last")
+    public ResponseEntity<Collection<StudentDetailDTO>> getLastStudents() {
+        return ResponseEntity.ok(studentService.getLastStudents());
+    }
+
     @GetMapping("{id}/faculty")
     public ResponseEntity<FacultyDetailDTO> getStudentFaculty(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStudentFacultyById(id));
