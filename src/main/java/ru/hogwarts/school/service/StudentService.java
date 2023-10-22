@@ -56,7 +56,7 @@ public class StudentService {
                     .orElseThrow(() -> new BadDataException("Faculty not found"));
             faculty.addStudent(student);
         }
-        studentRepository.save(student);
+        student = studentRepository.save(student);
         return studentDTOMapper.toDetailDTO(student);
     }
 
@@ -89,7 +89,7 @@ public class StudentService {
                 facultyNew.addStudent(student);
             }
         }
-        studentRepository.save(student);
+        student = studentRepository.save(student);
         return studentDTOMapper.toDetailDTO(student);
     }
 
