@@ -11,6 +11,7 @@ import ru.hogwarts.school.dto.StudentCreateDTO;
 import ru.hogwarts.school.dto.StudentDetailDTO;
 import ru.hogwarts.school.exception.BadDataException;
 import ru.hogwarts.school.model.Avatar;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,11 @@ import java.util.Collection;
 @RequestMapping("student")
 public class StudentController {
     private final StudentService studentService;
+    private final AvatarService avatarService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, AvatarService avatarService) {
         this.studentService = studentService;
+        this.avatarService = avatarService;
     }
 
     @GetMapping
@@ -67,6 +70,21 @@ public class StudentController {
         return ResponseEntity.ok(studentService.removeStudent(id));
     }
 
+    @GetMapping("count")
+    public ResponseEntity<Long> getCount() {
+        return ResponseEntity.ok(studentService.getStudentCount());
+    }
+
+    @GetMapping("avg-age")
+    public ResponseEntity<Double> getAvgAge() {
+        return ResponseEntity.ok(studentService.getStudentAvgAge());
+    }
+
+    @GetMapping("last")
+    public ResponseEntity<Collection<StudentDetailDTO>> getLastStudents() {
+        return ResponseEntity.ok(studentService.getLastStudents());
+    }
+
     @GetMapping("{id}/faculty")
     public ResponseEntity<FacultyDetailDTO> getStudentFaculty(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getStudentFacultyById(id));
@@ -78,13 +96,13 @@ public class StudentController {
             throw new BadDataException("File is too big");
         }
 
-        studentService.uploadAvatar(id, avatar);
+        avatarService.uploadAvatar(id, avatar);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
-        Avatar avatar = studentService.findAvatar(id);
+        Avatar avatar = avatarService.findAvatar(id);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
@@ -95,7 +113,7 @@ public class StudentController {
 
     @GetMapping(value = "/{id}/avatar")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Avatar avatar = studentService.findAvatar(id);
+        Avatar avatar = avatarService.findAvatar(id);
 
         Path path = Path.of(avatar.getFilePath());
 

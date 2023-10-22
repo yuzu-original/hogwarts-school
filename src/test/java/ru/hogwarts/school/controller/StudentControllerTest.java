@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.hogwarts.school.dto.mapper.AvatarDTOMapper;
 import ru.hogwarts.school.dto.mapper.FacultyDTOMapper;
 import ru.hogwarts.school.dto.mapper.StudentDTOMapper;
 import ru.hogwarts.school.exception.ErrorInfo;
@@ -18,6 +19,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
@@ -49,7 +51,13 @@ public class StudentControllerTest {
     private FacultyDTOMapper facultyDTOMapper;
 
     @SpyBean
+    private AvatarDTOMapper avatarDTOMapper;
+
+    @SpyBean
     private StudentService studentService;
+
+    @SpyBean
+    private AvatarService avatarService;
 
     @InjectMocks
     private StudentController studentController;
