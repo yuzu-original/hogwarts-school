@@ -1,38 +1,16 @@
-package ru.hogwarts.school.model;
+package ru.hogwarts.school.dto;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
-public class Avatar {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class AvatarNotDetailDTO {
     private String filePath;
     private Long fileSize;
     private String mediaType;
-    @Lob
-    private byte[] data;
-    @OneToOne
-    private Student student;
 
-    public Avatar() {
-    }
-
-    public Avatar(Long id, String filePath, Long fileSize, String mediaType, byte[] data) {
-        this.id = id;
+    public AvatarNotDetailDTO(String filePath, Long fileSize, String mediaType) {
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
-        this.data = data;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFilePath() {
@@ -59,40 +37,23 @@ public class Avatar {
         this.mediaType = mediaType;
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Avatar avatar = (Avatar) o;
-        return Objects.equals(id, avatar.id);
+        AvatarNotDetailDTO that = (AvatarNotDetailDTO) o;
+        return Objects.equals(filePath, that.filePath) && Objects.equals(fileSize, that.fileSize) && Objects.equals(mediaType, that.mediaType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(filePath, fileSize, mediaType);
     }
 
     @Override
     public String toString() {
-        return "Avatar{" +
-                "id=" + id +
-                ", filePath='" + filePath + '\'' +
+        return "AvatarNotDetailDTO{" +
+                "filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
                 ", mediaType='" + mediaType + '\'' +
                 '}';

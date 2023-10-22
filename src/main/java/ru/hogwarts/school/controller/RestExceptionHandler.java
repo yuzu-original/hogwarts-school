@@ -15,9 +15,9 @@ import ru.hogwarts.school.exception.NotFoundResourceException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(BadDataException.class)
+    @ExceptionHandler({BadDataException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody ErrorInfo handleBadDataException(BadDataException e) {
+    public @ResponseBody ErrorInfo handleBadDataException(RuntimeException e) {
         return new ErrorInfo(e);
     }
 
