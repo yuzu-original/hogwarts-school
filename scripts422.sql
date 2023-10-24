@@ -1,0 +1,15 @@
+CREATE TABLE car (
+  id SERIAL PRIMARY KEY,
+  brand TEXT NOT NULL,
+  model TEXT NOT NULL,
+  "cost" DECIMAL NOT NULL
+)
+
+CREATE TABLE driver (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  age INT NOT NULL,
+  have_license BOOLEAN NOT NULL DEFAULT FALSE,
+  car_id INT NOT NULL,
+  CONSTRAINT fk_car FOREIGN KEY(car_id) REFERENCES car(id)
+)
