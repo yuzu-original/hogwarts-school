@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDetailDTO;
 import ru.hogwarts.school.dto.StudentCreateDTO;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+    private final Logger logger = LoggerFactory.getLogger(StudentService.class);
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
     private final StudentDTOMapper studentDTOMapper;
@@ -33,13 +36,19 @@ public class StudentService {
     }
 
     public StudentDetailDTO createStudent(StudentCreateDTO studentInput) {
+        logger.info("createStudent method is called");
+
         Student student = new Student();
         student.setName(studentInput.getName());
         student.setAge(studentInput.getAge());
         if (studentInput.getFaculty() != null) {
             Faculty faculty = facultyRepository
                     .findById(studentInput.getFaculty())
-                    .orElseThrow(() -> new BadDataException("Faculty not found"));
+                    .orElseThrow(() -> {
+                        String message = "Faculty not found";
+                        logger.error(message);
+                        return new BadDataException(message);
+                    });
             faculty.addStudent(student);
         }
         student = studentRepository.save(student);
@@ -47,12 +56,20 @@ public class StudentService {
     }
 
     public StudentDetailDTO getStudentById(Long id) {
+        logger.info("getStudentById method is called");
+
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
+                .orElseThrow(() -> {
+                    String message = "Student not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         return studentDTOMapper.toDetailDTO(student);
     }
 
     public Collection<StudentDetailDTO> getAllStudents() {
+        logger.info("getAllStudents method is called");
+
         return studentRepository.findAll()
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)
@@ -60,8 +77,14 @@ public class StudentService {
     }
 
     public StudentDetailDTO updateStudent(Long id, StudentCreateDTO studentInput) {
+        logger.info("updateStudent method is called");
+
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
+                .orElseThrow(() -> {
+                    String message = "Student not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         student.setName(studentInput.getName());
         student.setAge(studentInput.getAge());
         Faculty faculty = student.getFaculty();
@@ -80,8 +103,14 @@ public class StudentService {
     }
 
     public StudentDetailDTO removeStudent(Long id) {
+        logger.info("removeStudent method is called");
+
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
+                .orElseThrow(() -> {
+                    String message = "Student not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         Faculty faculty = student.getFaculty();
         if (faculty != null) {
             faculty.removeStudent(student);
@@ -91,6 +120,8 @@ public class StudentService {
     }
 
     public Collection<StudentDetailDTO> getStudentsByAge(Integer age) {
+        logger.info("getStudentsByAge method is called");
+
         return studentRepository.findByAge(age)
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)
@@ -98,6 +129,8 @@ public class StudentService {
     }
 
     public Collection<StudentDetailDTO> getStudentsBetweenAge(Integer min, Integer max) {
+        logger.info("getStudentsBetweenAge method is called");
+
         return studentRepository.findByAgeBetween(min, max)
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)
@@ -106,6 +139,8 @@ public class StudentService {
 
 
     public FacultyDetailDTO getStudentFacultyById(Long id) {
+        logger.info("getStudentFacultyById method is called");
+
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundResourceException("Student not found"));
         Faculty faculty = student.getFaculty();
@@ -117,14 +152,20 @@ public class StudentService {
 
 
     public Long getStudentCount() {
+        logger.info("getStudentCount method is called");
+
         return studentRepository.getCount();
     }
 
     public Double getStudentAvgAge() {
+        logger.info("getStudentAvgAge method is called");
+
         return studentRepository.getAvgAge();
     }
 
     public List<StudentDetailDTO> getLastStudents() {
+        logger.info("getLastStudents method is called");
+
         return studentRepository.getLastStudents()
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)

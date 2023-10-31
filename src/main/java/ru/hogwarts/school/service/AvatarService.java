@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 public class AvatarService {
     @Value("${avatars.dir.path}")
     private String avatarsDirPath;
+
+    private final Logger logger = LoggerFactory.getLogger(AvatarService.class);
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
     private final AvatarDTOMapper avatarDTOMapper;
@@ -38,8 +42,14 @@ public class AvatarService {
 
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        logger.info("uploadAvatar method is called");
+
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundResourceException("Student not found"));
+                .orElseThrow(() -> {
+                    String message = "Student not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
 
         Path filePath = Path.of(avatarsDirPath, studentId + "." + getExtension(file.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
@@ -64,7 +74,13 @@ public class AvatarService {
     }
 
     public Avatar findAvatar(Long id) {
-        return avatarRepository.findByStudentId(id).orElseThrow(() -> new NotFoundResourceException("Avatar not found"));
+        logger.info("findAvatar method is called");
+
+        return avatarRepository.findByStudentId(id).orElseThrow(() -> {
+            String message = "Avatar not found";
+            logger.error(message);
+            return new NotFoundResourceException(message);
+        });
     }
 
     private String getExtension(String fileName) {
@@ -72,6 +88,8 @@ public class AvatarService {
     }
 
     public List<AvatarNotDetailDTO> findAllByPage(Integer page, Integer pageSize) {
+        logger.info("findAllByPage method is called");
+
         PageRequest pageRequest = PageRequest.of(page, pageSize);
         List<Avatar> avatars = avatarRepository.findAll(pageRequest).getContent();
         return avatars
