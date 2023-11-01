@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyCreateDTO;
 import ru.hogwarts.school.dto.FacultyDetailDTO;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
+    private final Logger logger = LoggerFactory.getLogger(FacultyService.class);
     private final FacultyRepository facultyRepository;
     private final StudentRepository studentRepository;
     private final FacultyDTOMapper facultyDTOMapper;
@@ -34,6 +37,8 @@ public class FacultyService {
     }
 
     public FacultyDetailDTO createFaculty(FacultyCreateDTO facultyInput) {
+        logger.info("createFaculty method is called");
+
         Faculty faculty = new Faculty();
         faculty.setName(facultyInput.getName());
         faculty.setColor(facultyInput.getColor());
@@ -42,7 +47,9 @@ public class FacultyService {
             for (Long id : studentsId) {
                 Student student = studentRepository.findById(id).orElse(null);
                 if (student == null) {
-                    throw new BadDataException("Student by id=" + id + " not found");
+                    String message = "Student by id=" + id + " not found";
+                    logger.error(message);
+                    throw new BadDataException(message);
                 }
                 Faculty oldFaculty = student.getFaculty();
                 if (oldFaculty != null) {
@@ -56,12 +63,20 @@ public class FacultyService {
     }
 
     public FacultyDetailDTO getFacultyById(Long id) {
+        logger.info("getFacultyById method is called");
+
         Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Faculty not found"));
+                .orElseThrow(() -> {
+                    String message = "Faculty not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         return facultyDTOMapper.toDetailDTO(faculty);
     }
 
     public Collection<FacultyNotDetailDTO> getAllFaculties() {
+        logger.info("getAllFaculties method is called");
+
         return facultyRepository.findAll()
                 .stream()
                 .map(facultyDTOMapper::toNotDetailDTO)
@@ -69,8 +84,14 @@ public class FacultyService {
     }
 
     public FacultyDetailDTO updateFaculty(Long id, FacultyCreateDTO facultyInput) {
+        logger.info("updateFaculty method is called");
+
         Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Faculty not found"));
+                .orElseThrow(() -> {
+                    String message = "Faculty not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         faculty.setName(facultyInput.getName());
         faculty.setColor(facultyInput.getColor());
 
@@ -88,7 +109,9 @@ public class FacultyService {
         for (Long i : newStudentsId) {
             Student student = studentRepository.findById(i).orElse(null);
             if (student == null) {
-                throw new BadDataException("Student by id=" + id + " not found");
+                String message = "Student by id=" + id + " not found";
+                logger.error(message);
+                throw new BadDataException(message);
             }
             Faculty oldFaculty = student.getFaculty();
             if (oldFaculty != null) {
@@ -102,8 +125,14 @@ public class FacultyService {
     }
 
     public FacultyDetailDTO removeFaculty(Long id) {
+        logger.info("removeFaculty method is called");
+
         Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Faculty not found"));
+                .orElseThrow(() -> {
+                    String message = "Faculty not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         if (faculty.getStudents() != null) {
             for (Student student : Set.copyOf(faculty.getStudents())) {
                 faculty.removeStudent(student);
@@ -114,6 +143,8 @@ public class FacultyService {
     }
 
     public Collection<FacultyNotDetailDTO> getFacultiesByColor(String color) {
+        logger.info("getFacultiesByColor method is called");
+
         return facultyRepository.findByColorIgnoreCase(color)
                 .stream()
                 .map(facultyDTOMapper::toNotDetailDTO)
@@ -121,6 +152,8 @@ public class FacultyService {
     }
 
     public Collection<FacultyNotDetailDTO> getFacultiesByName(String name) {
+        logger.info("getFacultiesByName method is called");
+
         return facultyRepository.findByNameIgnoreCase(name)
                 .stream()
                 .map(facultyDTOMapper::toNotDetailDTO)
@@ -128,8 +161,14 @@ public class FacultyService {
     }
 
     public Collection<StudentDetailDTO> getFacultyStudentsById(Long id) {
+        logger.info("getFacultyStudentsById method is called");
+
         Faculty faculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundResourceException("Faculty not found"));
+                .orElseThrow(() -> {
+                    String message = "Faculty not found";
+                    logger.error(message);
+                    return new NotFoundResourceException(message);
+                });
         return faculty.getStudents()
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)
