@@ -18,6 +18,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -173,5 +174,15 @@ public class FacultyService {
                 .stream()
                 .map(studentDTOMapper::toDetailDTO)
                 .collect(Collectors.toList());
+    }
+
+    public String getLongestName() {
+        // FIXME: bad practice
+        return facultyRepository.findAll()
+                .stream()
+                .parallel()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse(null);
     }
 }

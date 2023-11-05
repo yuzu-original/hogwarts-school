@@ -171,4 +171,24 @@ public class StudentService {
                 .map(studentDTOMapper::toDetailDTO)
                 .collect(Collectors.toList());
     }
+
+    public Collection<String> findNamesStartingWithA() {
+        // FIXME: bad practice
+        return studentRepository.findAll()
+                .stream()
+                .parallel()
+                .map(s -> s.getName().toUpperCase())
+                .filter(s -> s.startsWith("A"))
+                .collect(Collectors.toList());
+    }
+
+    public Double getAvgAge() {
+        // FIXME: bad practice
+        return studentRepository.findAll()
+                .stream()
+                .parallel()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElse(0);
+    }
 }
