@@ -125,4 +125,14 @@ public class StudentController {
             is.transferTo(os);
         }
     }
+
+    @GetMapping(value = "name-begins-with-a")
+    public ResponseEntity<Collection<String>> findNamesStartingWithA() {
+        return ResponseEntity.ok(studentService.findNamesStartingWithA());
+    }
+
+    @GetMapping(value = "avg-age/v2")
+    public ResponseEntity<Double> getAvgAge2() {
+        return ResponseEntity.ok(studentService.getAvgAge());
+    }
 }
