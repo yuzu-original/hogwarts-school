@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDetailDTO;
 import ru.hogwarts.school.dto.StudentCreateDTO;
@@ -190,5 +191,41 @@ public class StudentService {
                 .mapToDouble(Student::getAge)
                 .average()
                 .orElse(0);
+    }
+
+    public void runCommand1() {
+        PageRequest pageRequest = PageRequest.of(0, 6);
+        List<Student> students = studentRepository.findAll(pageRequest).getContent();
+        List<Student> students1 = students.subList(0, 2);
+        List<Student> students2 = students.subList(2, 4);
+        List<Student> students3 = students.subList(4, 6);
+
+        printNames(students1);
+        new Thread(() -> printNames(students2)).start();
+        new Thread(() -> printNames(students3)).start();
+    }
+
+    public void runCommand2() {
+        PageRequest pageRequest = PageRequest.of(0, 6);
+        List<Student> students = studentRepository.findAll(pageRequest).getContent();
+        List<Student> students1 = students.subList(0, 2);
+        List<Student> students2 = students.subList(2, 4);
+        List<Student> students3 = students.subList(4, 6);
+
+        printNamesSync(students1);
+        new Thread(() -> printNamesSync(students2)).start();
+        new Thread(() -> printNamesSync(students3)).start();
+    }
+
+    private void printNames(List<Student> students) {
+        for (Student student : students) {
+            System.out.println(student);
+        }
+    }
+
+    private synchronized void printNamesSync(List<Student> students) {
+        for (Student student : students) {
+            System.out.println(student);
+        }
     }
 }

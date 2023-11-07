@@ -135,4 +135,16 @@ public class StudentController {
     public ResponseEntity<Double> getAvgAge2() {
         return ResponseEntity.ok(studentService.getAvgAge());
     }
+
+    @GetMapping("run/1")
+    public ResponseEntity<?> runCommand1() {
+        studentService.runCommand1();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("run/2")
+    public ResponseEntity<?> runCommand2() {
+        studentService.runCommand2();
+        return ResponseEntity.noContent().build();
+    }
 }
